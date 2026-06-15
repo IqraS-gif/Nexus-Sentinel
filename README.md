@@ -39,17 +39,93 @@ graph TD
     H -->|Saves in Database| D
 ```
 
-### 1. Dynamic Incident Retention (`.aretain`)
-> [!NOTE]
-> When an engineer resolves an incident on our platform, the post-mortem analysis (including the title, symptoms, root cause, and verified configuration resolution steps) is automatically vectorized and saved into the Hindsight database. The agent literally *learns* in real-time from human resolutions.
+### 🛠️ Multi-Bank Routing Architecture
+To optimize semantic queries and prevent data cross-contamination, Nexus Sentinel maps incoming microservice alerts to dedicated Hindsight memory banks based on a prefix routing helper:
+* 💳 `payment` service → `payment-bank`
+* 🔑 `auth` service → `auth-bank`
+* 🗄️ `database` service → `database-bank`
+* 🌐 `gateway` service → `gateway-bank`
+* 📁 Dataset records → `devops-kb-bank`
+
+---
+
+### 1. Dynamic Incident Learning (`.aretain`)
+When an engineer marks an incident as resolved, the post-mortem analysis (symptoms, root cause, and verified configuration resolution) is vectorized and committed to the respective Hindsight microservice memory bank. This creates a real-time feedback loop.
+
+```python
+# Retaining a resolved incident in Hindsight
+ret = await memory_client.client.aretain(
+    bank_id=bank_id,
+    content=(
+        f"Incident: {incident.title}\n"
+        f"Description: {incident.description}\n"
+        f"Resolution: {incident.resolution}"
+    ),
+    context=f"resolved incident review for {incident.service}",
+    timestamp=incident.created_at,
+    document_id=f"incident_{incident.id}",
+    metadata={
+        "incident_id": str(incident.id),
+        "service": incident.service,
+        "severity": incident.severity.value,
+        "status": incident.status.value,
+        "timestamp": incident.created_at.isoformat()
+    }
+)
+```
+
+---
 
 ### 2. Semantic Similarity-Based Recall (`.arecall`)
-> [!TIP]
-> Instead of keyword searches which fail on complex system logs, Nexus Sentinel performs a semantic search. When raw logs or error details are fed into the system, Hindsight searches the vector embeddings of historical incidents (including our 502 DevOps dataset records) to surface matching patterns, even if the error logs are formatted differently or contain different variables.
+Traditional keyword-based log searching fails when matching variable-heavy stack traces. Nexus Sentinel leverages vector similarity to locate the top matches from previous incidents (including the 502 records from the historical DevOps CSV dataset) in milliseconds, regardless of differences in naming or log structure.
 
-### 3. Retrieval-Augmented Reflection (`.areflect`)
-> [!IMPORTANT]
-> We leverage Hindsight's reasoning engine. Instead of just showing raw search results, Nexus Sentinel feeds retrieved facts into a structured reflection schema. This prompts the AI memory to synthesize *evidence-based reasoning* and output exact *actionable playbooks*, complete with a confidence score derived from the density of past vector matches.
+```python
+# Recalling similar past incidents from the Hindsight bank
+response = await memory_client.client.arecall(
+    bank_id=bank_id,
+    query=f"{incident.title} {incident.description} {incident.service}"
+)
+
+# Extracts metadata details like TTR (Time to Resolve) and verified playbooks
+for match in response.results:
+    print(f"Matched text: {match.text}")
+    print(f"Resolution: {match.metadata.get('resolution')}")
+```
+
+---
+
+### 3. Retrieval-Augmented Structured Reflection (`.areflect`)
+Rather than outputting unstructured strings, the engine calls `.areflect()` with a custom JSON response schema. This guarantees that Hindsight's vector memory and LLM reasoning engine return a perfectly structured, type-safe diagnostic packet directly readable by the Copilot dashboard.
+
+```python
+# Structured reflection schema to constrain LLM responses
+schema = {
+    "type": "object",
+    "properties": {
+        "reasoning": {
+            "type": "string", 
+            "description": "Evidence-based summary linking the alert to historical causes."
+        },
+        "recommended_action": {
+            "type": "string", 
+            "description": "Actionable, concrete playbook steps."
+        },
+        "confidence_score": {
+            "type": "number", 
+            "description": "Similarity match probability (0.0 to 1.0)."
+        }
+    },
+    "required": ["reasoning", "recommended_action", "confidence_score"]
+}
+
+# Reflecting facts in Hindsight to synthesize playbooks
+response = await memory_client.client.areflect(
+    bank_id=bank_id,
+    query=raw_alert_logs,
+    include_facts=True,
+    response_schema=schema
+)
+```
 
 ---
 
