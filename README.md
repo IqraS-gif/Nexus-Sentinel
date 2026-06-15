@@ -39,93 +39,39 @@ graph TD
     H -->|Saves in Database| D
 ```
 
-### 🛠️ Multi-Bank Routing Architecture
-To optimize semantic queries and prevent data cross-contamination, Nexus Sentinel maps incoming microservice alerts to dedicated Hindsight memory banks based on a prefix routing helper:
-* 💳 `payment` service → `payment-bank`
-* 🔑 `auth` service → `auth-bank`
-* 🗄️ `database` service → `database-bank`
-* 🌐 `gateway` service → `gateway-bank`
-* 📁 Dataset records → `devops-kb-bank`
+### 🛠️ Isolated Multi-Bank Service Routing
+Rather than dumping all operational data into a single unstructured memory pool, Nexus Sentinel implements a **Multi-Bank Architecture**. Telemetry and alerts are dynamically routed to isolated service-specific memory spaces:
+* 💳 **Payment Operations** → `payment-bank`
+* 🔑 **Authentication & Identity** → `auth-bank`
+* 🗄️ **Database Clusters** → `database-bank`
+* 🌐 **API Gateway & Routing** → `gateway-bank`
+* 📁 **Historical Grounding** → `devops-kb-bank`
+
+This routing prevents semantic noise. For example, database connection timeouts are matched *exclusively* against historical database patterns, ensuring that the retrieved fixes are highly contextual and functionally relevant.
 
 ---
 
-### 1. Dynamic Incident Learning (`.aretain`)
-When an engineer marks an incident as resolved, the post-mortem analysis (symptoms, root cause, and verified configuration resolution) is vectorized and committed to the respective Hindsight microservice memory bank. This creates a real-time feedback loop.
-
-```python
-# Retaining a resolved incident in Hindsight
-ret = await memory_client.client.aretain(
-    bank_id=bank_id,
-    content=(
-        f"Incident: {incident.title}\n"
-        f"Description: {incident.description}\n"
-        f"Resolution: {incident.resolution}"
-    ),
-    context=f"resolved incident review for {incident.service}",
-    timestamp=incident.created_at,
-    document_id=f"incident_{incident.id}",
-    metadata={
-        "incident_id": str(incident.id),
-        "service": incident.service,
-        "severity": incident.severity.value,
-        "status": incident.status.value,
-        "timestamp": incident.created_at.isoformat()
-    }
-)
-```
+### 🔄 The Infinite Learning Loop (`.aretain`)
+Nexus Sentinel doesn't rely on static playbooks. It implements an autonomous, self-improving memory cycle:
+* **Real-time vectorization**: The moment an on-call engineer mitigates an issue and hits "Resolve" in the dashboard, the backend constructs a structured post-mortem report (alert logs, identified root cause, and verified configuration patch).
+* **Metadata indexing**: The report is sent to Hindsight's vector space labeled with critical metadata (Incident ID, Service, Severity level, Resolution Timestamp).
+* **Instant training**: The agent instantly absorbs this new solution, making it immediately available for future alerts without requiring any manual documentation or wiki updates.
 
 ---
 
-### 2. Semantic Similarity-Based Recall (`.arecall`)
-Traditional keyword-based log searching fails when matching variable-heavy stack traces. Nexus Sentinel leverages vector similarity to locate the top matches from previous incidents (including the 502 records from the historical DevOps CSV dataset) in milliseconds, regardless of differences in naming or log structure.
-
-```python
-# Recalling similar past incidents from the Hindsight bank
-response = await memory_client.client.arecall(
-    bank_id=bank_id,
-    query=f"{incident.title} {incident.description} {incident.service}"
-)
-
-# Extracts metadata details like TTR (Time to Resolve) and verified playbooks
-for match in response.results:
-    print(f"Matched text: {match.text}")
-    print(f"Resolution: {match.metadata.get('resolution')}")
-```
+### 🔍 Semantic Similarity Matching (`.arecall`)
+Standard log parsers and keyword filters fail when error variables, timestamps, and thread IDs change. Hindsight enables Nexus Sentinel to achieve **Fuzzy Semantic Recall**:
+* **Vector distance matching**: Raw logs and stack traces are compared based on semantic meaning rather than exact strings.
+* **TTR calculation**: The system automatically pulls matching cases from our pre-seeded **502 DevOps historical incidents** to calculate an expected Time-to-Resolve (TTR).
+* **Resolution pre-fetching**: It retrieves the exact solutions that resolved similar trace patterns in the past, even if the current error message is formatted differently or occurs in a separate microservice.
 
 ---
 
-### 3. Retrieval-Augmented Structured Reflection (`.areflect`)
-Rather than outputting unstructured strings, the engine calls `.areflect()` with a custom JSON response schema. This guarantees that Hindsight's vector memory and LLM reasoning engine return a perfectly structured, type-safe diagnostic packet directly readable by the Copilot dashboard.
-
-```python
-# Structured reflection schema to constrain LLM responses
-schema = {
-    "type": "object",
-    "properties": {
-        "reasoning": {
-            "type": "string", 
-            "description": "Evidence-based summary linking the alert to historical causes."
-        },
-        "recommended_action": {
-            "type": "string", 
-            "description": "Actionable, concrete playbook steps."
-        },
-        "confidence_score": {
-            "type": "number", 
-            "description": "Similarity match probability (0.0 to 1.0)."
-        }
-    },
-    "required": ["reasoning", "recommended_action", "confidence_score"]
-}
-
-# Reflecting facts in Hindsight to synthesize playbooks
-response = await memory_client.client.areflect(
-    bank_id=bank_id,
-    query=raw_alert_logs,
-    include_facts=True,
-    response_schema=schema
-)
-```
+### 🧠 Structured Reasoning Enforcement (`.areflect`)
+Surface-level search results can be confusing during a high-pressure outage. Nexus Sentinel leverages Hindsight's reflection engine to synthesize raw search data:
+* **Retrieval-Augmented Generation (RAG)**: The retrieved past incidents are combined with Groq (Llama-3.1) reasoning inside Hindsight.
+* **Strict Schema Enforcement**: We enforce a strict JSON output schema. The AI must structure its output into distinct sections: **Root-Cause Reasoning**, **Actionable Playbook Steps**, and **Match Confidence Score**.
+* **Confidence Grading**: The system automatically determines alert severity levels (e.g., *Critical Known* vs *New Pattern*) based on Hindsight's confidence probability, preventing visual noise for on-call engineers.
 
 ---
 
