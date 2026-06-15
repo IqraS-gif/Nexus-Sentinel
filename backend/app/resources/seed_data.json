@@ -1,0 +1,182 @@
+[
+  {
+    "title": "Payment Service Gateway Timeout",
+    "description": "Stripe gateway timeout during checkout flow.",
+    "service": "payment",
+    "severity": "critical",
+    "status": "resolved",
+    "resolution": "Switched Stripe API endpoints to secondary region and updated timeout configurations to 15s.",
+    "created_at": "2026-06-01T10:00:00Z"
+  },
+  {
+    "title": "Redis Connection Pool Exhausted",
+    "description": "Redis connection pool reached limit of 500 active connections in payment service.",
+    "service": "payment",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Increased max connection pool size to 1000 and optimized idle client eviction time.",
+    "created_at": "2026-06-02T11:15:00Z"
+  },
+  {
+    "title": "Token Validation Latency Spike",
+    "description": "Latency in parsing JWT token spiked to 350ms in authentication service.",
+    "service": "auth",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Implemented token verification cache with redis to avoid public key fetch latency.",
+    "created_at": "2026-06-03T14:30:00Z"
+  },
+  {
+    "title": "Database Connection Refused",
+    "description": "PostgreSQL instance refused connection from gateway server.",
+    "service": "database",
+    "severity": "critical",
+    "status": "resolved",
+    "resolution": "Restarted PostgreSQL service replica and cleaned zombie backend threads.",
+    "created_at": "2026-06-04T09:20:00Z"
+  },
+  {
+    "title": "API Gateway Rate Limit Triggered",
+    "description": "API Gateway began rate limiting standard users due to misconfigured Ingress controller rules.",
+    "service": "gateway",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Updated Ingress rate limit annotations and reloaded Nginx configurations.",
+    "created_at": "2026-06-05T16:45:00Z"
+  },
+  {
+    "title": "Database Query Table Scan",
+    "description": "Unindexed query on transactions table caused CPU spike to 98%.",
+    "service": "database",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Added composite index on user_id and status columns of transactions table.",
+    "created_at": "2026-06-06T08:10:00Z"
+  },
+  {
+    "title": "Payment Verification Webhook Failure",
+    "description": "Adyen payment notification webhook failed with 500 error code.",
+    "service": "payment",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Fixed parsing logic for Adyen payload webhook controller to handle null value in metadata.",
+    "created_at": "2026-06-07T12:00:00Z"
+  },
+  {
+    "title": "Auth Database Locked",
+    "description": "SQLite database file locked error during high volume user registration.",
+    "service": "auth",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Migrated auth tables to primary PostgreSQL database and increased query timeout.",
+    "created_at": "2026-06-08T15:25:00Z"
+  },
+  {
+    "title": "API Gateway CORS Policy Block",
+    "description": "Cross-Origin requests blocked for subdomain API after CDN deployment.",
+    "service": "gateway",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Added explicit CORS allowed origin headers to CDN endpoint profile settings.",
+    "created_at": "2026-06-09T11:40:00Z"
+  },
+  {
+    "title": "Database Disk Space Full",
+    "description": "PostgreSQL transaction logs filled database disk storage capacity.",
+    "service": "database",
+    "severity": "critical",
+    "status": "resolved",
+    "resolution": "Cleared old log archives and enabled automatic pg_wal cleanup settings.",
+    "created_at": "2026-06-10T07:30:00Z"
+  },
+  {
+    "title": "Double Charge on Checkout Flow",
+    "description": "Concurrent checkout requests from same client caused double charges.",
+    "service": "payment",
+    "severity": "critical",
+    "status": "resolved",
+    "resolution": "Implemented redis distributed lock key based on cart ID to block concurrent requests.",
+    "created_at": "2026-06-11T13:10:00Z"
+  },
+  {
+    "title": "LDAP Sync Failures",
+    "description": "Active Directory login sync failed in auth service due to expired credentials.",
+    "service": "auth",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Rotated LDAP bind credentials in secret manager and forced AD sync task reload.",
+    "created_at": "2026-06-12T08:50:00Z"
+  },
+  {
+    "title": "Gateway TLS Handshake Errors",
+    "description": "Clients failed to connect due to TLS handshake timeout at Load Balancer.",
+    "service": "gateway",
+    "severity": "critical",
+    "status": "resolved",
+    "resolution": "Updated cipher suite configurations on Cloudflare and disabled deprecated TLS versions.",
+    "created_at": "2026-06-12T10:15:00Z"
+  },
+  {
+    "title": "Payment Refund Job Stalled",
+    "description": "Celery task scheduler failed to trigger refund jobs queue.",
+    "service": "payment",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Restarted RabbitMQ broker container and purged corrupted tasks queue.",
+    "created_at": "2026-06-12T11:40:00Z"
+  },
+  {
+    "title": "Database Row Locking Contention",
+    "description": "Deadlock detected on inventory table update during sales event.",
+    "service": "database",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Optimized transaction order sequences and shortened database lock scopes.",
+    "created_at": "2026-06-12T12:00:00Z"
+  },
+  {
+    "title": "User Logout Invalidation Failures",
+    "description": "JWT tokens remained valid after explicit user logout.",
+    "service": "auth",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Added logout token blacklist store in redis with TTL corresponding to token age.",
+    "created_at": "2026-06-12T13:20:00Z"
+  },
+  {
+    "title": "Gateway Subsystem Memory Leak",
+    "description": "NGINX controller worker processes restarted continuously due to memory limits.",
+    "service": "gateway",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Updated Lua configuration scripts in ingress controller to release unused tables.",
+    "created_at": "2026-06-12T14:10:00Z"
+  },
+  {
+    "title": "Read Replica Replication Lag",
+    "description": "Replication lag on analytics replica spiked to 45 minutes.",
+    "service": "database",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Adjusted max_wal_senders and hot_standby_feedback settings on DB replica configurations.",
+    "created_at": "2026-06-12T15:30:00Z"
+  },
+  {
+    "title": "Auth MFA Callback Failures",
+    "description": "Twilio SMS callbacks failed for MFA validation routes.",
+    "service": "auth",
+    "severity": "high",
+    "status": "resolved",
+    "resolution": "Updated Twilio SDK client configuration to support payload fallback webhook channels.",
+    "created_at": "2026-06-12T16:05:00Z"
+  },
+  {
+    "title": "Gateway Static Asset Invalidation Failure",
+    "description": "Users received cached older frontend bundle after hotfix release.",
+    "service": "gateway",
+    "severity": "medium",
+    "status": "resolved",
+    "resolution": "Triggered manual CDN purge for index.html cache route.",
+    "created_at": "2026-06-12T17:12:00Z"
+  }
+]
