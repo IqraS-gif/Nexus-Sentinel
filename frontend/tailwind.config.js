@@ -1,0 +1,102 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        slate: {
+          50: "#ffffff",
+          100: "#f5f7fc",
+          200: "#e2e8f5",
+          300: "#b3c5e8",
+          400: "#84a3db",
+          500: "#00008A",
+          600: "#000075",
+          700: "#000060",
+          800: "#00004c",
+          900: "#000038",
+          950: "#000024",
+        },
+        blue: {
+          50: "#f0ffff",
+          100: "#ccffff",
+          200: "#99ffff",
+          300: "#66ffff",
+          400: "#33ffff",
+          500: "#00008A",
+          600: "#000075",
+          700: "#000060",
+          800: "#00004c",
+          900: "#000038",
+          950: "#000024",
+        },
+        purple: {
+          50: "#f5f0ff",
+          100: "#ebd9ff",
+          200: "#d7b3ff",
+          300: "#c48cff",
+          400: "#b066ff",
+          500: "#8A2BE2",
+          600: "#7922cc",
+          700: "#6819b5",
+          800: "#57109f",
+          900: "#460788",
+        },
+        orange: {
+          50: "#fff5eb",
+          100: "#ffebd4",
+          200: "#ffd7a8",
+          300: "#ffc27d",
+          400: "#ffae52",
+          500: "#FF8C00",
+          600: "#d97300",
+          700: "#b35a00",
+          800: "#8c4100",
+          900: "#662800",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
+  },
+  plugins: [],
+}

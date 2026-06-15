@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 60% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 60% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 60% 12%;
+
+    --primary: 240 100% 27.1%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 180 100% 50%;
+    --secondary-foreground: 240 100% 27.1%;
+
+    --muted: 240 20% 96%;
+    --muted-foreground: 240 15% 45%;
+
+    --accent: 271 76% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 33 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 30% 90%;
+    --input: 240 30% 90%;
+    --ring: 180 100% 50%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer components {
+  .btn-premium-primary {
+    @apply bg-[#00008A] text-white border-2 border-[#00008A] hover:bg-[#00008A]/90 hover:border-[#00FFFF] hover:shadow-[0_0_12px_rgba(0,255,255,0.4)] transition-all duration-300 font-mono tracking-wider uppercase rounded-lg font-bold text-xs shadow-sm;
+  }
+  .btn-premium-secondary {
+    @apply bg-white text-[#00008A] border-2 border-[#00008A]/20 hover:border-[#00008A] hover:bg-slate-50 transition-all duration-300 font-mono tracking-wider uppercase rounded-lg font-bold text-xs shadow-xs;
+  }
+  .btn-premium-cyan {
+    @apply bg-[#00FFFF]/10 text-[#00008A] border-2 border-[#00FFFF] hover:bg-[#00FFFF]/20 hover:shadow-[0_0_12px_rgba(0,255,255,0.5)] transition-all duration-300 font-mono tracking-wider uppercase rounded-lg font-bold text-xs;
+  }
+  .card-premium {
+    @apply bg-white border-2 border-slate-200 hover:border-[#00008A]/40 hover:shadow-[0_0_15px_rgba(0,0,138,0.06)] rounded-2xl transition-all duration-300;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom premium animations for landing page background */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-40px) scale(1.15) rotate(180deg);
+  }
+}
+
+@keyframes float-medium {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(40px, -45px) scale(1.1) rotate(120deg);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9) rotate(240deg);
+  }
+}
+
+@keyframes float-fast {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50px, 40px) scale(1.2) rotate(-180deg);
+  }
+}
+
+@keyframes scan-sweep {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.65;
+  }
+  90% {
+    opacity: 0.65;
+  }
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 28s infinite ease-in-out;
+}
+
+.animate-float-medium {
+  animation: float-medium 22s infinite ease-in-out;
+}
+
+.animate-float-fast {
+  animation: float-fast 16s infinite ease-in-out;
+}
+
+.animate-scan-sweep {
+  animation: scan-sweep 12s infinite linear;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 4s infinite ease-in-out;
+}
+
+/* Lenis smooth scrolling styles */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Mesh Gradient Animation */
+@keyframes mesh-move {
+  0% {
+    background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0%;
+  }
+  25% {
+    background-position: 50% 100%, 0% 50%, 100% 50%, 50% 0%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%, 100% 0%, 0% 100%;
+  }
+  75% {
+    background-position: 0% 50%, 100% 50%, 50% 0%, 50% 100%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0%;
+  }
+}
+
+.mesh-gradient-bg {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 255, 255, 0.22) 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 10%, rgba(255, 140, 0, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(0, 0, 138, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(138, 43, 226, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(0, 255, 255, 0.16) 0%, transparent 45%);
+  background-size: 240% 240%;
+  animation: mesh-move 32s infinite ease-in-out;
+  filter: blur(80px);
+}
+
+
